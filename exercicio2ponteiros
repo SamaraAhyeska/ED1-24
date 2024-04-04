@@ -1,0 +1,13 @@
+#include <stdio.h>
+
+int main() {
+    float array[10];
+
+  
+    printf("\nEndereços do array:\n");
+    for (int i = 0; i < 10; i++) {
+        printf("Endereço do elemento %d: %p\n", i, &array[i]);
+    }
+
+    return 0;
+}
