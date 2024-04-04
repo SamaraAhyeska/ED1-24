@@ -1,0 +1,27 @@
+#include <stdio.h>
+
+void encontrarMinMax(int *vetor, int tamanho, int *min, int *max) {
+    *min = *vetor;
+    *max = *vetor;
+
+    for (int i = 1; i < tamanho; i++) {
+        if (*(vetor + i) < *min) {
+            *min = *(vetor + i);
+        }
+        if (*(vetor + i) > *max) {
+            *max = *(vetor + i);
+        }
+    }
+}
+
+int main() {
+    int vetor[] = {5, 2, 9, 1, 7}; 
+    int tamanho = 5; 
+    int min, max;
+    encontrarMinMax(vetor, tamanho, &min, &max);
+
+    printf("O menor elemento do vetor é: %d\n", min);
+    printf("O maior elemento do vetor é: %d\n", max);
+
+    return 0;
+}
