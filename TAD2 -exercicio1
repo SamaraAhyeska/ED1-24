@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define MAX_CLIENTES 50
+struct Data {
+    int dia, mes, ano;
+};
+struct Cliente {
+    char nome[100];
+    struct Data data_nascimento;
+    int idade;
+    char sexo;
+};
+
+int calcularIdade(struct Data data_nascimento, struct Data data_atual) {
+    int idade = data_atual.ano - data_nascimento.ano;
+    if (data_atual.mes < data_nascimento.mes || 
+        (data_atual.mes == data_nascimento.mes && data_atual.dia < data_nascimento.dia)) {
+        idade--;
+    }
+    
+    return idade;
+}
+void exibirCliente(struct Cliente cliente) {
+    printf("Nome: %s\n", cliente.nome);
+    printf("Data de Nascimento: %02d/%02d/%d\n", cliente.data_nascimento.dia, cliente.data_nascimento.mes, cliente.data_nascimento.ano);
+    printf("Idade: %d\n", cliente.idade);
+    printf("Sexo: %c\n", cliente.sexo);
+    printf("\n");
+}
+
+int main() {
+    struct Cliente clientes[MAX_CLIENTES];
+    struct Data data_atual;
+    int opcao, num_clientes = 0;
+
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    data_atual.dia = tm.tm_mday;
+    data_atual.mes = tm.tm_mon + 1;
+    data_atual.ano = tm.tm_year + 1900;
+    
+    do {
+        while(getchar() != '\n');
+        printf("Menu:\n");
+        printf("1. Cadastrar cliente\n");
+        printf("2. Listar clientes\n");
+        printf("3. Sair\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+        
+        switch(opcao) {
+            case 1:
+                if (num_clientes < MAX_CLIENTES) {
+                    printf("Digite o nome do cliente: ");
+                    scanf("%s", clientes[num_clientes].nome);
+                    
+                    printf("Digite o dia, mes e ano de nascimento (formato DD MM AAAA): ");
+                    scanf("%d %d %d", &clientes[num_clientes].data_nascimento.dia, &clientes[num_clientes].data_nascimento.mes, &clientes[num_clientes].data_nascimento.ano);
+                    printf("Digite o sexo do cliente (M/F): ");
+                    scanf(" %c", &clientes[num_clientes].sexo);
+                    clientes[num_clientes].idade = calcularIdade(clientes[num_clientes].data_nascimento, data_atual);
+                    
+                    printf("Cliente cadastrado com sucesso!\n\n");
+                    
+                    num_clientes++;
+                } else {
+                    printf("Limite de clientes atingido!\n\n");
+                }
+                break;
+            case 2:
+                printf("Clientes cadastrados:\n");
+                for (int i = 0; i < num_clientes; i++) {
+                    printf("Cliente %d:\n", i + 1);
+                    exibirCliente(clientes[i]);
+                }
+                break;
+            case 3:
+                printf("Saindo...\n");
+                break;
+            default:
+                printf("Opcao invalida!\n");
+        }
+    } while(opcao != 3);
+
+    return 0;
+}
