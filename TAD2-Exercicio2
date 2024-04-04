@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_FUNCIONARIOS 10
+struct Funcionario {
+    char nome[100];
+    char cargo[100];
+    float salario_base;
+    float beneficios;
+    float descontos;
+    float salario_liquido;
+};
+
+struct Loja {
+    struct Funcionario funcionarios[MAX_FUNCIONARIOS];
+    int num_funcionarios;
+};
+
+void calcularSalarioLiquido(struct Funcionario *funcionario) {
+    funcionario->salario_liquido = funcionario->salario_base + funcionario->beneficios - funcionario->descontos;
+}
+
+void exibirFuncionario(struct Funcionario funcionario) {
+    printf("Nome: %s\n", funcionario.nome);
+    printf("Cargo: %s\n", funcionario.cargo);
+    printf("Salário Base: %.2f\n", funcionario.salario_base);
+    printf("Benefícios: %.2f\n", funcionario.beneficios);
+    printf("Descontos: %.2f\n", funcionario.descontos);
+    printf("Salário Líquido: %.2f\n\n", funcionario.salario_liquido);
+}
+
+float calcularMediaSalarial(struct Loja loja) {
+    float soma_salarios = 0;
+    for (int i = 0; i < loja.num_funcionarios; i++) {
+        soma_salarios += loja.funcionarios[i].salario_liquido;
+    }
+    return soma_salarios / loja.num_funcionarios;
+}
+struct Funcionario encontrarMaiorSalario(struct Loja loja) {
+    struct Funcionario maior_salario = loja.funcionarios[0];
+    for (int i = 1; i < loja.num_funcionarios; i++) {
+        if (loja.funcionarios[i].salario_liquido > maior_salario.salario_liquido) {
+            maior_salario = loja.funcionarios[i];
+        }
+    }
+    return maior_salario;
+}
+
+int main() {
+    struct Loja loja;
+    loja.num_funcionarios = 0;
+
+    printf("Cadastro de funcionários:\n");
+    char continuar;
+    do {
+        if (loja.num_funcionarios < MAX_FUNCIONARIOS) {
+            struct Funcionario novo_funcionario;
+            printf("Funcionário %d:\n", loja.num_funcionarios + 1);
+            printf("Nome: ");
+            scanf("%s", novo_funcionario.nome);
+            printf("Cargo: ");
+            scanf("%s", novo_funcionario.cargo);
+            printf("Salário Base: ");
+            scanf("%f", &novo_funcionario.salario_base);
+            printf("Benefícios: ");
+            scanf("%f", &novo_funcionario.beneficios);
+            printf("Descontos: ");
+            scanf("%f", &novo_funcionario.descontos);
+
+            calcularSalarioLiquido(&novo_funcionario);
+
+            loja.funcionarios[loja.num_funcionarios] = novo_funcionario;
+            loja.num_funcionarios++;
+        } else {
+            printf("Limite de funcionários atingido!\n");
+            break;
+        }
+
+        printf("Deseja cadastrar outro funcionário? (S/N): ");
+        scanf(" %c", &continuar);
+    } while (continuar == 'S' || continuar == 's');
+
+    printf("\nFuncionários cadastrados:\n");
+    for (int i = 0; i < loja.num_funcionarios; i++) {
+        printf("Funcionário %d:\n", i + 1);
+        exibirFuncionario(loja.funcionarios[i]);
+    }
+    printf("Média Salarial da Loja: %.2f\n", calcularMediaSalarial(loja));
+    struct Funcionario maior_salario = encontrarMaiorSalario(loja);
+    printf("Funcionário com maior salário:\n");
+    exibirFuncionario(maior_salario);
+
+    return 0;
+}
