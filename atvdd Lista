@@ -1,0 +1,186 @@
+#include<stdio.h>
+
+struct No {
+    int valor;
+    No* prox;
+
+    No() {
+        prox = NULL;
+    }
+
+    No(int _valor) {
+        valor = _valor;
+        prox = NULL;
+    }
+};
+
+struct Lista {
+    No* inicio;
+    No* fim;
+
+    Lista() {
+        inicio = NULL;
+        fim = NULL;
+    }
+
+    void inserirInicio(int n) {
+        No* novo = new No(n);
+        if (inicio == NULL) {
+            inicio = novo;
+            fim = novo;
+        } else {
+            novo->prox = inicio;
+            inicio = novo;
+        }
+    }
+
+    void inserirFinal(int n) {
+        No* novo = new No(n);
+        if (inicio == NULL) {
+            inicio = novo;
+            fim = novo;
+        } else {
+            fim->prox = novo;
+            fim = novo;
+        }
+    }
+
+    void imprimir() {
+        No* aux = inicio;
+        while (aux != NULL) {
+            printf("%d\n", aux->valor);
+            aux = aux->prox;
+        }
+    }
+
+   
+    void removerUltimosN(int n) {
+        if (inicio == NULL) return;
+
+        int tamanho = 0;
+        No* aux = inicio;
+
+    
+        while (aux != NULL) {
+            tamanho++;
+            aux = aux->prox;
+        }
+
+     
+        if (n >= tamanho) {
+            while (inicio != NULL) {
+                aux = inicio;
+                inicio = inicio->prox;
+                delete aux;
+            }
+            fim = NULL;
+            return;
+        }
+
+      
+        int novaPosicaoFinal = tamanho - n;
+        aux = inicio;
+        for (int i = 1; i < novaPosicaoFinal; i++) {
+            aux = aux->prox;
+        }
+
+    
+        No* apagar;
+        while (aux->prox != NULL) {
+            apagar = aux->prox;
+            aux->prox = aux->prox->prox;
+            delete apagar;
+        }
+
+        fim = aux;
+        fim->prox = NULL;
+    }
+
+
+    void removerSegundo() {
+        if (inicio == NULL || inicio->prox == NULL) return;
+
+        No* segundo = inicio->prox;
+        inicio->prox = segundo->prox;
+        delete segundo;
+
+      
+        if (inicio->prox == NULL) {
+            fim = inicio;
+        }
+    }
+
+   
+    void inserirTamanho() {
+        int tamanho = 0;
+        No* aux = inicio;
+
+     
+        while (aux != NULL) {
+            tamanho++;
+            aux = aux->prox;
+        }
+
+       
+        inserirFinal(tamanho);
+    }
+
+    
+    void inserirDeUmAteN(int n) {
+        for (int i = 1; i <= n; i++) {
+            inserirFinal(i);
+        }
+    }
+
+    
+    void inserirPenultima(int n) {
+        if (inicio == NULL || inicio->prox == NULL) return;
+
+        No* novo = new No(n);
+        No* aux = inicio;
+
+        // Percorre até o penúltimo elemento
+        while (aux->prox != fim) {
+            aux = aux->prox;
+        }
+
+        novo->prox = aux->prox;
+        aux->prox = novo;
+    }
+};
+
+int main() {
+    Lista l;
+
+    l.inserirInicio(10);
+    l.inserirInicio(5);
+    l.inserirInicio(1);
+    l.inserirInicio(8);
+    l.inserirFinal(7);
+    l.inserirFinal(3);
+
+    printf("Lista inicial:\n");
+    l.imprimir();
+
+    printf("\nRemover os 2 últimos elementos:\n");
+    l.removerUltimosN(2);
+    l.imprimir();
+
+    printf("\nRemover o segundo elemento:\n");
+    l.removerSegundo();
+    l.imprimir();
+
+    printf("\nInserir o tamanho atual da lista no final:\n");
+    l.inserirTamanho();
+    l.imprimir();
+
+    printf("\nInserir de 1 até 3 na lista:\n");
+    l.inserirDeUmAteN(3);
+    l.imprimir();
+
+    printf("\nInserir 99 na penúltima posição:\n");
+    l.inserirPenultima(99);
+    l.imprimir();
+
+    return 0;
+}
